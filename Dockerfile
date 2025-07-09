@@ -1,0 +1,22 @@
+FROM python:3.11-slim
+
+# Set timezone to Moscow
+ENV TZ=Europe/Moscow
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+WORKDIR /app
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Create logs directory and set permissions
+RUN mkdir -p /app/logs && chmod 777 /app/logs
+
+COPY . .
+
+# Add src directory to Python path
+ENV PYTHONPATH=/app/src
+
+EXPOSE 8083
+
+CMD ["uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8083"] 
