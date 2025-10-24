@@ -2,6 +2,7 @@ import asyncio
 import logging
 import os
 from typing import Optional, List
+from contextlib import asynccontextmanager
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
@@ -25,10 +26,8 @@ logger = logging.getLogger(__name__)
 # Load environment variables
 load_dotenv()
 
-# Create FastAPI app
-app = FastAPI()
+# Initialize templates and static files
 templates = Jinja2Templates(directory="templates")  # Используем корневой каталог templates
-app.mount("/static", StaticFiles(directory="static"), name="static")
 
 class WeatherBot:
     def __init__(self):
@@ -120,16 +119,25 @@ class WeatherBot:
 # Create bot instance
 bot = WeatherBot()
 
-@app.on_event("startup")
-async def startup_event():
-    """Initialize services on startup"""
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Manage application lifespan"""
+    # Startup
+    logger.info("Starting application...")
     await bot.initialize()
     await bot.start()  # Start the bot after initialization
-
-@app.on_event("shutdown")
-async def shutdown_event():
-    """Cleanup on shutdown"""
+    logger.info("Application started successfully")
+    
+    yield
+    
+    # Shutdown
+    logger.info("Shutting down application...")
     await bot.stop()
+    logger.info("Application stopped successfully")
+
+# Create FastAPI app with lifespan
+app = FastAPI(lifespan=lifespan)
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 @app.get("/", response_class=HTMLResponse)
 async def read_root(request: Request):
@@ -203,6 +211,16 @@ async def get_weather(cities: str = ""):
             })
             
     return {"results": results}
+
+@app.get("/health")
+async def health_check():
+    """Health check endpoint"""
+    return {"status": "healthy", "timestamp": datetime.now().isoformat()}
+
+@app.get("/cities")
+async def get_cities():
+    """Get list of monitored cities"""
+    return {"cities": MONITORED_CITIES}
 
 async def start_bot():
     """Start the bot"""

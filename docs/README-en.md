@@ -31,23 +31,34 @@ A Telegram bot that provides weather updates for multiple cities using the OpenW
 ## 📁 Project Structure
 
 ```
-/app
-  - main.py           - Main FastAPI application
-  - config.py         - Application configuration
-  - weather_service.py - Weather service
-  - telegram_service.py - Telegram bot
-  - database_service.py - Database operations
-  - lifecycle.py      - Lifecycle management
-
-/src
-  - scheduler.py      - Task scheduler
-  - tests/           - Unit tests
-  - templates/       - HTML templates
-  
-/static             - Static files
-/templates          - Page templates
-/logs               - Application logs
-/migrations         - Database migrations
+OpenWeatherApp/
+├── app/                    # Main application
+│   ├── main.py            # FastAPI application
+│   ├── config.py          # Application configuration
+│   ├── weather_service.py # Weather service
+│   ├── telegram_service.py # Telegram bot
+│   ├── database_service.py # Database operations
+│   └── lifecycle.py      # Lifecycle management
+├── tests/                 # Structured tests
+│   ├── test_weather_service.py
+│   ├── test_api.py
+│   └── test_config.py
+├── migrations/            # Database migrations
+│   ├── env.py
+│   └── versions/
+├── docs/                  # Documentation
+├── .github/workflows/     # GitHub Actions CI/CD
+├── static/               # Static files
+├── templates/            # HTML templates
+├── logs/                 # Application logs
+├── docker-compose.yml    # Docker configuration
+├── Dockerfile           # Docker image
+├── requirements.txt     # Python dependencies
+├── alembic.ini         # Migration configuration
+├── pytest.ini         # Test configuration
+├── LICENSE             # MIT license
+├── CONTRIBUTING.md     # Developer guide
+└── EnvExample          # Environment variables example
 ```
 
 ## 🛠 Technologies
@@ -79,7 +90,12 @@ git clone <repository-url>
 cd OpenWeatherApp
 ```
 
-2. Create `.env` file with parameters:
+2. Create `.env` file based on example:
+```bash
+cp EnvExample .env
+```
+
+Then edit `.env` file with parameters:
 ```env
 OPENWEATHER_API_KEY=your_api_key
 TELEGRAM_BOT_TOKEN=your_bot_token
@@ -137,26 +153,70 @@ python -m uvicorn src.main:app --reload --port 8083
 
 ## 👨‍💻 Development
 
+### Setting up development environment
+
 1. Create branch for new feature:
 ```bash
 git checkout -b feature/name
 ```
 
-2. Run tests:
+2. Install development dependencies:
 ```bash
-python -m pytest
+pip install -r requirements.txt
 ```
 
-3. Check with linter:
+### Testing
+
+3. Run all tests:
+```bash
+pytest
+```
+
+4. Run tests with coverage:
+```bash
+pytest --cov=app --cov-report=html
+```
+
+5. Run specific tests:
+```bash
+pytest tests/test_weather_service.py
+pytest tests/test_api.py
+pytest tests/test_config.py
+```
+
+### Code quality checks
+
+6. Check with linter:
 ```bash
 flake8 .
 ```
 
-4. Create database migration:
+7. Check security:
+```bash
+bandit -r app/
+safety check
+```
+
+### Database management
+
+8. Initialize migrations (if needed):
+```bash
+python init_migrations.py
+```
+
+9. Create new migration:
 ```bash
 alembic revision --autogenerate -m "description"
 alembic upgrade head
 ```
+
+### CI/CD
+
+The project uses GitHub Actions for automated testing:
+- Tests run on Python 3.11 and 3.12
+- Linter and security checks
+- Docker image building
+- Code coverage reporting
 
 ## 🔍 Support
 

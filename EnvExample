@@ -1,0 +1,29 @@
+# OpenWeather API Configuration
+OPENWEATHER_API_KEY=your_openweather_api_key_here
+
+# Telegram Bot Configuration
+TELEGRAM_BOT_TOKEN=your_telegram_bot_token_here
+
+# Database Configuration (optional - if not set, will use SQLite)
+DATABASE_URL=postgresql://user:password@localhost:5432/weather_db
+
+# Application Settings
+DEBUG=False
+LOG_LEVEL=INFO
+
+# Timezone Settings
+TIMEZONE=Europe/Moscow
+
+# Notification Settings
+SEND_REGULAR_UPDATES=True
+SEND_ALERTS=True
+
+# Alert Thresholds
+TEMPERATURE_CHANGE_THRESHOLD=5.0
+WIND_SPEED_THRESHOLD=15.0
+
+# Update Interval (in seconds)
+UPDATE_INTERVAL=1800
+
+# Monitored Cities (comma-separated)
+MONITORED_CITIES=Moscow,Saint Petersburg,Pskov,Belgrade
