@@ -12,7 +12,12 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Create logs directory and set permissions
 RUN mkdir -p /app/logs && chmod 777 /app/logs
 
+# Copy all files
 COPY . .
+
+# Verify that app directory exists
+RUN ls -la /app/
+RUN ls -la /app/app/
 
 # Add current directory to Python path
 ENV PYTHONPATH=/app

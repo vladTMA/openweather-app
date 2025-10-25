@@ -75,12 +75,14 @@ jobs:
     - name: Test Docker image
       run: |
         echo "Starting Docker container..."
-        docker run --rm -d --name test-container -p 8083:8083 \
+        CONTAINER_ID=$(docker run -d --name test-container -p 8083:8083 \
           -e OPENWEATHER_API_KEY=test_openweather_api_key_123456789 \
           -e TELEGRAM_BOT_TOKEN=test_telegram_bot_token_123456789 \
           -e DATABASE_URL=sqlite:///test.db \
           -e DEBUG=True \
-          openweather-app:latest
+          openweather-app:latest)
+        
+        echo "Container ID: $CONTAINER_ID"
         
         echo "Waiting for container to start..."
         sleep 5
@@ -91,6 +93,9 @@ jobs:
         echo "Checking container logs:"
         docker logs test-container || echo "No logs available"
         
+        echo "Checking container exit code:"
+        docker inspect test-container --format='{{.State.ExitCode}}' || echo "Container not found"
+        
         echo "Waiting for application to start..."
         sleep 15
         
@@ -98,7 +103,7 @@ jobs:
         curl -f http://localhost:8083/health || (echo "Health check failed, trying root:" && curl -f http://localhost:8083/ || exit 1)
         
         echo "Stopping container..."
-        docker stop test-container
+        docker stop test-container || echo "Container already stopped"
 
   security-scan:
     runs-on: ubuntu-latest
