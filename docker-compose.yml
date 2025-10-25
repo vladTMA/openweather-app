@@ -16,4 +16,5 @@ services:
     restart: "no"
     environment:
       - PYTHONUNBUFFERED=1
-      - PYTHONPATH=/app 
+      - PYTHONPATH=/app
+      - DATABASE_URL=sqlite+aiosqlite:///app/weather.db 

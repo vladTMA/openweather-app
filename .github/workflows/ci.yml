@@ -78,7 +78,7 @@ jobs:
         CONTAINER_ID=$(docker run -d --name test-container -p 8083:8083 \
           -e OPENWEATHER_API_KEY=test_openweather_api_key_123456789 \
           -e TELEGRAM_BOT_TOKEN=test_telegram_bot_token_123456789 \
-          -e DATABASE_URL=sqlite:///test.db \
+          -e DATABASE_URL=sqlite+aiosqlite:///test.db \
           -e DEBUG=True \
           openweather-app:latest)
         
