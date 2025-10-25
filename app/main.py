@@ -40,6 +40,12 @@ class WeatherBot:
     async def initialize(self) -> None:
         """Initialize all services"""
         try:
+            # Check if we're in test mode
+            test_mode = os.getenv('TEST_MODE', 'False').lower() == 'true'
+            if test_mode:
+                logger.info("Running in TEST_MODE - skipping external service initialization")
+                return
+            
             # Initialize database if URL is provided
             database_url = os.getenv('DATABASE_URL')
             if database_url:
@@ -92,6 +98,13 @@ class WeatherBot:
         """Start all services"""
         try:
             await self.initialize()
+            
+            # Check if we're in test mode
+            test_mode = os.getenv('TEST_MODE', 'False').lower() == 'true'
+            if test_mode:
+                logger.info("Running in TEST_MODE - skipping Telegram bot start")
+                return
+            
             if not self.telegram_service:
                 raise RuntimeError("Telegram service was not initialized")
             await self.telegram_service.start()
