@@ -14,9 +14,9 @@ RUN mkdir -p /app/logs && chmod 777 /app/logs
 
 COPY . .
 
-# Add src directory to Python path
-ENV PYTHONPATH=/app/src
+# Add app directory to Python path
+ENV PYTHONPATH=/app/app
 
 EXPOSE 8083
 
-CMD ["uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8083"] 
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8083"] 
