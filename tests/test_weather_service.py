@@ -110,7 +110,7 @@ class TestTelegramService:
         assert telegram_service.subscribed_chats == []
     
     @pytest.mark.asyncio
-    async def test_send_weather_updates(self):
+    async def test_send_weather_updates(self, mock_weather_data):
         """Test sending weather updates to subscribed users"""
         mock_weather_service = Mock()
         telegram_service = TelegramService("test_token", mock_weather_service)
@@ -127,6 +127,7 @@ class TestTelegramService:
             await telegram_service.send_weather_updates(weather_updates)
             
             # Verify that messages were sent to all subscribed chats
+            # Should be 2 calls (one for each subscribed chat)
             assert mock_app.bot.send_message.call_count == 2
 
 
