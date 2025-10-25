@@ -74,17 +74,30 @@ jobs:
 
     - name: Test Docker image
       run: |
+        echo "Starting Docker container..."
         docker run --rm -d --name test-container -p 8083:8083 \
           -e OPENWEATHER_API_KEY=test_openweather_api_key_123456789 \
           -e TELEGRAM_BOT_TOKEN=test_telegram_bot_token_123456789 \
           -e DATABASE_URL=sqlite:///test.db \
           -e DEBUG=True \
           openweather-app:latest
-        sleep 20
+        
+        echo "Waiting for container to start..."
+        sleep 5
+        
+        echo "Checking if container is running:"
+        docker ps -a
+        
         echo "Checking container logs:"
-        docker logs test-container
+        docker logs test-container || echo "No logs available"
+        
+        echo "Waiting for application to start..."
+        sleep 15
+        
         echo "Testing health endpoint:"
         curl -f http://localhost:8083/health || (echo "Health check failed, trying root:" && curl -f http://localhost:8083/ || exit 1)
+        
+        echo "Stopping container..."
         docker stop test-container
 
   security-scan:

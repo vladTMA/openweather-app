@@ -14,8 +14,8 @@ RUN mkdir -p /app/logs && chmod 777 /app/logs
 
 COPY . .
 
-# Add app directory to Python path
-ENV PYTHONPATH=/app/app
+# Add current directory to Python path
+ENV PYTHONPATH=/app
 
 EXPOSE 8083
 
